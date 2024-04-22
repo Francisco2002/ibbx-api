@@ -1,0 +1,31 @@
+service: project
+app: backend
+
+frameworkVersion: "3"
+
+package:
+  individually: true
+  excludeDevDependencies: true
+
+plugins:
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  stage: ${opt:stage, 'development'}
+  region: ${opt:region, 'us-east-1'}
+  versionFunctions: false
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+
+functions:
+  api:
+    name: API
+    handler: src/handler.main
+    timeout: 29
+    events:
+      - httpApi:
+          method: GET
+          path: /example
