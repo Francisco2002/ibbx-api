@@ -4,13 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npx serverless offline"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "serverless-offline": "^13.3.4",
-    "serverless": "^3.33.0"
+    "serverless": "^3.33.0",
+    "serverless-offline": "^13.3.4"
+  },
+  "dependencies": {
+    "sqlite3": "^5.1.7"
   }
 }

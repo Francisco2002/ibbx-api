@@ -28,4 +28,25 @@ functions:
     events:
       - httpApi:
           method: GET
-          path: /example
+          path: /assets
+      - httpApi:
+          method: POST
+          path: /assets
+      - httpApi:
+          method: DELETE
+          path: /assets/{assetId}
+      - httpApi:
+          method: GET
+          path: /assets/{assetId}/sensors
+      - httpApi:
+          method: POST
+          path: /assets/{assetId}/sensors
+      - httpApi:
+          method: DELETE
+          path: /assets/{assetId}/sensors/{sensorId}
+      - httpApi:
+          method: GET
+          path: /assets/{assetId}/sensors/{sensorId}
+      - httpApi:
+          method: POST
+          path: /assets/{assetId}/sensors/{sensorId}
