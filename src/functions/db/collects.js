@@ -1,13 +1,21 @@
 const { dbTransaction } = require(".");
 
 async function createCollectTable() {
-    await dbTransaction("run", "CREATE TABLE IF NOT EXISTS collects (id INTEGER PRIMARY KEY AUTOINCREMENT, date DATE, value DECIMAL(8, 2), sensorId INTEGER NOT NULL, FOREIGN KEY(sensorId) REFERENCES sensors(id))");
+    await dbTransaction("run", "PRAGMA foreign_keys=ON");
+    await dbTransaction("run", "CREATE TABLE IF NOT EXISTS collects (id INTEGER PRIMARY KEY AUTOINCREMENT, date DATE, value DECIMAL(8, 2), sensorId INTEGER NOT NULL, CONSTRAINT fk_collect_sensor FOREIGN KEY (sensorId) REFERENCES sensors(id) ON DELETE CASCADE)");
 }
 
-async function listCollects(sensorId) {
+async function listCollects(assetId, sensorId) {
     await createCollectTable();
-    const collects = await dbTransaction("all", `SELECT S.name as sensorName, A.id as assetId, A.name as assetName, C.* FROM sensors as S INNER JOIN assets as A ON S.assetId=A.id INNER JOIN collects as C ON C.sensorId=S.id WHERE C.sensorId=${sensorId}`);
-    return collects;
+
+    const sensor = await dbTransaction("all", `SELECT * FROM sensors WHERE id=${sensorId}`);
+    const asset = await dbTransaction("all", `SELECT * FROM assets WHERE id=${assetId}`);
+    const collects = await dbTransaction("all", `SELECT * FROM collects WHERE sensorId=${sensorId} ORDER BY date DESC`);
+
+    sensor[0]["asset"] = asset[0];
+    sensor[0]["collects"] = collects;
+
+    return sensor[0];
 }
 
 async function createCollect(date, value, sensorId) {
@@ -26,7 +34,8 @@ async function deleteCollect(sensorId, date) {
     await createCollectTable();
 
     try {
-        await dbTransaction("run", `DELETE FROM collects WHERE sensorId=${sensorId} AND date=${date}`);
+        console.log(sensorId, date);
+        await dbTransaction("run", `DELETE FROM collects WHERE sensorId=${sensorId} AND date="${date}"`);
     } catch (error) {
         return { error };
     }

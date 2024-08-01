@@ -1,6 +1,7 @@
 const { dbTransaction } = require(".");
 
 async function createAssetsTable() {
+    await dbTransaction("run", "PRAGMA foreign_keys=ON");
     await dbTransaction("run", "CREATE TABLE IF NOT EXISTS assets (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(255))");
 }
 

@@ -13,7 +13,7 @@ module.exports.main = async (event) => {
         response = sensors.list(event.pathParameters.assetId);
         break;
       case "/assets/{assetId}/sensors/{sensorId}":
-        response = collects.list(event.pathParameters.sensorId);
+        response = collects.list(event.pathParameters.assetId, event.pathParameters.sensorId);
         break;
     }
   } else if(method == "POST") {

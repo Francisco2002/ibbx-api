@@ -1,16 +1,19 @@
 const { dbTransaction } = require(".");
 
 async function createSensorsTable() {
-    await dbTransaction("run", "CREATE TABLE IF NOT EXISTS sensors (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(255), assetId INTEGER NOT NULL, FOREIGN KEY(assetId) REFERENCES assets(id))");
+    await dbTransaction("run", "PRAGMA foreign_keys=ON");
+    await dbTransaction("run", "CREATE TABLE IF NOT EXISTS sensors (id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(255), assetId INTEGER NOT NULL, CONSTRAINT fk_sensor_asset FOREIGN KEY(assetId) REFERENCES assets(id) ON DELETE CASCADE)");
 }
 
 async function listSensors(assetId) {
     await createSensorsTable();
-    const sensors = await dbTransaction("all", `SELECT A.name as assetName, S.* FROM assets as A INNER JOIN sensors as S ON A.id=S.assetId WHERE S.assetId=${assetId}`);
 
-    console.log("ABC > ", sensors);
+    const asset = await dbTransaction("all", `SELECT * FROM assets WHERE id=${assetId} LIMIT 1`);
+    const sensors = await dbTransaction("all", `SELECT * FROM sensors WHERE assetId=${assetId}`);
 
-    return sensors;
+    asset[0]["sensors"] = sensors || [];
+
+    return asset[0];
 }
 
 async function createSensor(name, assetId) {
