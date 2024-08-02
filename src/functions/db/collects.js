@@ -22,7 +22,16 @@ async function createCollect(date, value, sensorId) {
     await createCollectTable();
 
     try {
-        await dbTransaction("run", `INSERT INTO collects (date, value, sensorId) VALUES ('${date}', ${value}, ${sensorId})`);   
+        const collect = await dbTransaction("all", `SELECT * FROM collects WHERE date="${date}" LIMIT 1`);
+
+        let sql = `INSERT INTO collects (date, value, sensorId) VALUES ('${date}', ${value}, ${sensorId})`;
+
+        console.log("COLLECT > ", collect);
+
+        if(collect.length > 0)
+            sql = `UPDATE collects SET value=${value} WHERE date="${date}"`;
+        
+        await dbTransaction("run", sql);   
     } catch (error) {
         return { error };
     }
