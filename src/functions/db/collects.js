@@ -2,7 +2,7 @@ const { dbTransaction } = require(".");
 
 async function createCollectTable() {
     await dbTransaction("run", "PRAGMA foreign_keys=ON");
-    await dbTransaction("run", "CREATE TABLE IF NOT EXISTS collects (id INTEGER PRIMARY KEY AUTOINCREMENT, date DATE, value DECIMAL(8, 2), sensorId INTEGER NOT NULL, CONSTRAINT fk_collect_sensor FOREIGN KEY (sensorId) REFERENCES sensors(id) ON DELETE CASCADE)");
+    await dbTransaction("run", "CREATE TABLE IF NOT EXISTS collects (date DATE PRIMARY KEY, value DECIMAL(8, 2), sensorId INTEGER NOT NULL, CONSTRAINT fk_collect_sensor FOREIGN KEY (sensorId) REFERENCES sensors(id) ON DELETE CASCADE)");
 }
 
 async function listCollects(assetId, sensorId) {
