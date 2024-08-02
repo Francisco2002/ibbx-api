@@ -1,5 +1,7 @@
+const dbPath = 'db/ibbx-challenge.sqlite';
+
 const sqlite = require("sqlite3");
-const db = new sqlite.Database('db/ibbx-challenge.sqlite');
+const db = new sqlite.Database(dbPath);
 
 const dbTransaction = (command, sql) => new Promise((resolve, reject) => {
     db.serialize(() => {
